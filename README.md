@@ -1,5 +1,7 @@
 # MASXML-DALI Parser
 
+## Description
+
 Quick and dirty convenience wrappers around lxml etree for easier parsing.
 
 The XML is quite straightforward, so this parser doesn't do much apart from:
@@ -9,11 +11,17 @@ The XML is quite straightforward, so this parser doesn't do much apart from:
 
 All elements can be used as normal lxml etree.
 
+## Install
+
+```
+pip install git+git://github.com/chrism-qmul/masxml_dali_parser.git
+```
+
 ## Example
 Fetch the first sentence, its tokens, its markables (+ heads),
 get back the relative offsets of those markables, and display the text.
 
-```
+```python
 import masxml_dali_parser 
 
 fh = open("data/DALI-LEARN/Read_Easy_English/A_Back_To_School-masxml.xml", 'rb')
@@ -29,7 +37,7 @@ for markable in sentence.markables():
 ## Example
 Fetch the mentions from the first paragraph and get their named entities:
 
-```
+```python
 import masxml_dali_parser
 
 fh = open("data/DALI-LEARN/Read_Easy_English/A_Back_To_School-masxml.xml", 'rb')
