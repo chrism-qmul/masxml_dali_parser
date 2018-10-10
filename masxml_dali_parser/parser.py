@@ -1,8 +1,8 @@
 from lxml import etree
 
 class DefaultElement(etree.ElementBase):
-  def query(self, query):
-    return self.xpath(query)
+  def query(self, xpath):
+    return self.parser.root_query(xpath)
 
   def words(self):
     return self.query("//W")
@@ -27,14 +27,9 @@ class DefaultElement(etree.ElementBase):
 
 class AddressedElementBase(DefaultElement):
   @property
-  def lookup_table(self):
-    W_lookup_table = {el.get("id"): idx for idx, el in enumerate(self.xpath("//W"))}
-    return W_lookup_table
-
-  @property
   def offsets(self):
     start_id, end_id = self.id_offsets
-    lookup_table = self.lookup_table
+    lookup_table = self.parser.word_lookup_table
     return (lookup_table.get(start_id), lookup_table.get(end_id))
 
   def relative_offsets(self, containing_element):
@@ -52,7 +47,7 @@ class AddressedElementBase(DefaultElement):
 
   def query(self, query):
     start, end = self.offsets
-    return [el for el in self.xpath(query) if el.is_inside(self)]
+    return [el for el in self.parser.root_query(query) if el.is_inside(self)]
 
 class IDAddressedElement(AddressedElementBase):
   @property
@@ -83,10 +78,42 @@ class MASXMLDALI_Lookup(etree.CustomElementClassLookup):
       'am': SpanAddressedElement,
       'layMarkable': StartEndAddressedElement}
 
-  def lookup(self, node_type, document, namespace, name):
-    return self.element_addressing_types.get(name, DefaultElement)
+  def __init__(self, parser):
+    super().__init__(self)
+    self.parser = parser
 
-def parse(xml_string):
-  parser = etree.XMLParser()
-  parser.set_element_class_lookup(MASXMLDALI_Lookup())
-  return etree.fromstring(xml_string, parser)
+  def lookup(self, node_type, document, namespace, name):
+    klass = self.element_addressing_types.get(name, DefaultElement)
+    return type("A" + klass.__name__, (klass,), {"parser": self.parser})
+
+class Parser:
+  def __init__(self, xml_string):
+    self.parser = etree.XMLParser()
+    self.parser.set_element_class_lookup(MASXMLDALI_Lookup(self))
+    self.root = etree.fromstring(xml_string, self.parser)
+    self.xpatheval = etree.XPathEvaluator(self.root)
+    self.word_lookup_table = {el.get("id"): idx for idx, el in enumerate(self.xpatheval("//W"))}
+
+  def root_query(self, xpath):
+    return self.xpatheval(xpath)
+
+  def words(self):
+    return self.root.words()
+
+  def sentences(self):
+    return self.root.sentences()
+
+  def paragraphs(self):
+    return self.root.paragraphs()
+
+  def sections(self):
+    return self.root.sections()
+
+  def ner(self):
+    return self.root.ner()
+
+  def markable_heads(self):
+    return self.root.markable_heads()
+
+  def markables(self):
+    return self.root.markables()

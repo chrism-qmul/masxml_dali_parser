@@ -26,9 +26,9 @@ import masxml_dali_parser
 
 fh = open("data/DALI-LEARN/Read_Easy_English/A_Back_To_School-masxml.xml", 'rb')
 xml_string = fh.read()
-root = masxml_dali_parser.parse(xml_string)
+parser = masxml_dali_parser.Parser(xml_string)
 
-sentence = root.sentences()[1]
+sentence = parser.sentences()[1]
 print([word.text for word in sentence.words()])
 for markable in sentence.markables():
   print((markable.relative_offsets(sentence), markable.getparent().relative_offsets(sentence), [word.text for word in markable.words()]))
@@ -42,9 +42,9 @@ import masxml_dali_parser
 
 fh = open("data/DALI-LEARN/Read_Easy_English/A_Back_To_School-masxml.xml", 'rb')
 xml_string = fh.read()
-root = masxml_dali_parser.parse(xml_string)
+parser = masxml_dali_parser.Parser(xml_string)
 
-paragraph = root.paragraphs()[0]
+paragraph = parser.paragraphs()[0]
 for markable in paragraph.markables():
   print([word.text for word in markable.words()])
   print([ner.get("nerType") for ner in markable.ner()])
