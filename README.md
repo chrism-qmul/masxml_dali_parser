@@ -17,6 +17,11 @@ All elements can be used as normal lxml etree.
 pip install git+git://github.com/chrism-qmul/masxml_dali_parser.git
 ```
 
+or in requirements.txt as:
+```
+git+git://github.com/chrism-qmul/masxml_dali_parser.git@0.0.2#egg=masxml-dali-parser
+```
+
 ## Example
 Fetch the first sentence, its tokens, its markables (+ heads),
 get back the relative offsets of those markables, and display the text.
