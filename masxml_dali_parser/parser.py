@@ -49,7 +49,7 @@ class AddressedElementBase(DefaultElement):
     start, end = self.offsets
     return [el for el in self.parser.root_query(query) if el.is_inside(self)]
 
-  def text(self):
+  def original_text(self):
     words = self.words()
     text = self.parser.root_query('//textualContent')[0].text
     start_offset, end_offset = int(words[0].attrib['start'])+1, int(words[-1].attrib['end'])+1

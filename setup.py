@@ -5,7 +5,7 @@ from setuptools import (
 
 setup(
     name="masxml_dali_parser",
-    version = "0.0.3",
+    version = "0.0.4",
     author="Chris M",
     author_email='c.j.madge@qmul.ac.uk',
     url="https://github.com/chrism-qmul/masxml_dali_parser",

@@ -50,7 +50,7 @@ xml_string = fh.read()
 parser = masxml_dali_parser.Parser(xml_string)
 
 paragraph = parser.paragraphs()[0]
-print(paragraph.text())
+print(paragraph.original_text())
 for markable in paragraph.markables():
   print([word.text for word in markable.words()])
   print([ner.get("nerType") for ner in markable.ner()])
